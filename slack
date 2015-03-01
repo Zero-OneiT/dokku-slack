@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# This scripts send a message to Slack channel where you need put some messages.
+#
+# More info on Slack
+# Website: https://slack.com/
+# Twitter: @slackhq, @slackapi
+#
+# My info
+# Website: https://github.com/zerooneit
+# Twitter: @diegoresendez
+
+set -e
+
+while getopts “:c:r:u:t:m:” OPTION; do
+  case $OPTION in
+    c) OPT_TYPE=$OPTARG;;
+    r) OPT_CHANNEL=$OPTARG;;
+    u) OPT_USER=$OPTARG;;
+    t) OPT_TITLE=$OPTARG;;
+    m) MESSAGE=$OPTARG;;
+  esac
+done
+
+#Modify these variables for your environment
+
+USERNAME=${SLACK_USERNAME:-$OPT_USER}
+USERNAME=${USERNAME:-Deployer}
+CHANNEL=${SLACK_CHANNEL:-$OPT_CHANNEL}
+CHANNEL=${CHANNEL:-general}
+TYPE=${OPT_TYPE:-good}
+
+
+PAYLOAD="\
+{
+	\"channel\":\"#${CHANNEL}\",
+	\"username\":\"${USERNAME}\",
+	\"attachments\":[{
+	    \"fallback\":\"${MESSAGE}\",
+	    \"color\":\"${TYPE}\",
+	    \"title\":\"${OPT_TITLE}\",
+	    \"text\":\"${MESSAGE}\"
+	}]
+}"
+#Send message to Slack
+
+curl -X POST --data-urlencode "payload=${PAYLOAD}" ${SLACK_WEBHOOK_URL}

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Reverses the hostname for the application
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1"; SUBDOMAIN="$2"; VHOST="$3"
+
+NEW_SUBDOMAIN=`echo $SUBDOMAIN | rev`
+SLACK_PATH=$PLUGIN_PATH/slack
+
+sh $SLACK_PATH/slack -r "${SLACK_CHANNEL}" -u Deployer -m "App ${APP} is now deployed to ${NEW_SUBDOMAIN}.${VHOST}" -t "Deployed ${APP}" -c "good";
